@@ -3,8 +3,7 @@ package utilities;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
 
 /**
  * utilities.ConfigProperties class
@@ -25,18 +24,39 @@ public class ConfigProperties {
         }
     }
 
-    public static String getProperty(String property){
+    public static Set<String> getAllPropertyStartingWith(String startsWith) {
+        Set<String> prop = ConfigProperties.getAllPropertiesNames();
+        Set<String> propStarts = new HashSet<>();
+        for (String p : prop) {
+            if (p.startsWith(startsWith)) {
+                propStarts.add(p);
+            }
+        }
+        return propStarts;
+    }
+
+    public static String getProperty(String property) {
         return (String) properties.get(property);
     }
 
     /*
     Would throw an NumberFormatException if the string is invalid.
      */
-    public static int getPropertyInt(String prop){
+    public static int getPropertyInt(String prop) {
         return Integer.valueOf(properties.getProperty(prop));
     }
 
-    public static Set<String> getAllPropertiesNames(){
+    public static Set<String> getAllPropertiesNames() {
         return properties.stringPropertyNames();
+    }
+
+    public static Map<String, Integer> getAllServers() {
+        HashMap<String, Integer> servers = new HashMap<>();
+        Set<String> configServers = getAllPropertyStartingWith("servers.");
+        for(String p : configServers){
+            String serverName = p.substring("servers.".length());
+            servers.put(serverName, getPropertyInt(p));
+        }
+        return servers;
     }
 }
