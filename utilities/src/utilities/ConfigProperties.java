@@ -50,13 +50,4 @@ public class ConfigProperties {
         return properties.stringPropertyNames();
     }
 
-    public static Map<String, Integer> getAllServers() {
-        HashMap<String, Integer> servers = new HashMap<>();
-        Set<String> configServers = getAllPropertyStartingWith("servers.");
-        for(String p : configServers){
-            String serverName = p.substring("servers.".length());
-            servers.put(serverName, getPropertyInt(p));
-        }
-        return servers;
-    }
 }

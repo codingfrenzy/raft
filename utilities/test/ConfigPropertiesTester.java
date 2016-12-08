@@ -1,7 +1,6 @@
 import utilities.ConfigProperties;
 import utilities.Constants;
 
-import java.util.Map;
 import java.util.Set;
 
 public class ConfigPropertiesTester {
@@ -11,8 +10,6 @@ public class ConfigPropertiesTester {
         for ( String p : prop) {
 //            System.out.println(p + " : " + ConfigProperties.getProperty(p));
         }
-        Map<String, Integer> servers = ConfigProperties.getAllServers();
-        System.out.println(servers);
 
 //        for ( String p : servers.keySet()) {
 //            System.out.println(p + " : " + ConfigProperties.getProperty(p));

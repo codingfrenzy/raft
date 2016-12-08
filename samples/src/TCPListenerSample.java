@@ -1,6 +1,5 @@
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -17,27 +16,30 @@ public class TCPListenerSample {
 
         server = new ServerSocket(port);
         System.out.println("Waiting for client request");
-        Socket socket = server.accept();
-        System.out.println("Client connected");
 
         while (true) {
+            Socket socket = server.accept();
+            System.out.println("Client connected");
             ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
 
-            Thread.sleep(5 * 1000);
             MessageSample messageSample = (MessageSample) ois.readObject();
             System.out.println("MessageSample Received: " + messageSample);
+            Thread.sleep(5 * 1000);
 
+            /*
             ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
             MessageSample m = new MessageSample();
             m.one = "one1";
             m.two = "two2";
-
             oos.writeObject(m);
+            */
 
-            ois.close();
+            if (messageSample.one.equals("exit")) {
+                break;
+            }
             socket.close();
-            break;
         }
+//        ois.close();
         System.out.println("Shutting down Socket server!!");
         server.close();
     }
