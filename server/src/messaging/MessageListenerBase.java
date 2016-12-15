@@ -1,4 +1,4 @@
-package serverNode;
+package messaging;
 
 /**
  * Created by prasanthnair on 12/7/16.

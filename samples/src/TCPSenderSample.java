@@ -11,6 +11,7 @@ public class TCPSenderSample {
 
     public static void main(String args[]) throws IOException, ClassNotFoundException {
 
+        double rand = Math.random();
         for (int i = 0; i < 2; i++) {
 
             System.out.println("Connecting to server");
@@ -19,7 +20,7 @@ public class TCPSenderSample {
 
             ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
             MessageSample m = new MessageSample();
-            m.one = "one";
+            m.one = "one" + rand;
             m.two = "two";
             oos.writeObject(m);
 

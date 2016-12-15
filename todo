@@ -1,0 +1,10 @@
+Project goals:
+
+Executor - change the design to use executor instead of having 4 threads running all the time.
+java8 lambda (implement the single method in an interface using the shorthand)
+
+
+--------------
+
+Implementation quick to-dos:
+
