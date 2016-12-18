@@ -1,10 +1,12 @@
 import messaging.AppendCommandMessage;
 import utilities.ConfigProperties;
 import utilities.Constants;
+import utilities.LoggerHelper;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.logging.Logger;
 
 /**
  * Sample class to listen to a TCP port and display the messages.
@@ -12,6 +14,7 @@ import java.net.Socket;
 public class ServersMessageSenderSample {
 
     private static int port = 15000;
+    private static Logger log = LoggerHelper.getLogger(ServersMessageSenderSample.class.getName());
 
     public static void main(String args[]) {
 
@@ -36,6 +39,10 @@ public class ServersMessageSenderSample {
 //                e.printStackTrace();
             }
         }
+        log.info("samppllee!!!");
+        log.severe("samppllee!!!");
+        log.fine("samppllee!!!");
+        log.warning("samppllee!!!");
         System.out.println("Shutting down Socket server!!");
     }
 }
