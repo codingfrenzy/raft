@@ -1,6 +1,6 @@
 package serverNode;
 
-import messaging.Message;
+import messaging.AppendCommandMessage;
 import utilities.Constants;
 
 import java.io.IOException;
@@ -15,7 +15,7 @@ public class Candidate extends ServerBase {
         server = new ServerSocket(selfInfo.getServerPortBase() + Constants.PORT_OFFSET_LISTENER_CANDIDATE);
     }
 
-    protected void processMessage(Message msg){
+    protected void processMessage(AppendCommandMessage msg) {
         System.out.println("Candidate Received: " + msg);
     }
 }

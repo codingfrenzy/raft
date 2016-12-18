@@ -1,6 +1,9 @@
 package serverNode;
 
 
+import utilities.ConfigProperties;
+import utilities.Constants;
+
 import java.io.IOException;
 
 public class ServerStarter {
@@ -10,8 +13,8 @@ public class ServerStarter {
             System.exit(0);
         }
 
-        // start 4 listeners
-        // start termTimeout timer thread
+        System.out.println(ConfigProperties.getPropertyInt("portOffset.listener.follower"));
+        System.out.println(Constants.PORT_OFFSET_LISTENER_FOLLOWER);
 
         Follower follower = new Follower(args[0]);
         Thread tFol = new Thread(follower);

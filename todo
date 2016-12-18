@@ -8,3 +8,16 @@ java8 lambda (implement the single method in an interface using the shorthand)
 
 Implementation quick to-dos:
 
+logger
+Log helper
+    - command exist?
+        - what DS to use? fast insert and search and order
+    current term/index
+Log simultar for testing/workshop
+    - election validation
+    - exist
+    - overwrite
+Candidate RV
+Follower validate RV
+start termTimeout timer thread in starter for Candidate
+

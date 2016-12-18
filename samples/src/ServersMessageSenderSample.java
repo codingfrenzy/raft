@@ -1,4 +1,4 @@
-import messaging.Message;
+import messaging.AppendCommandMessage;
 import utilities.ConfigProperties;
 import utilities.Constants;
 
@@ -17,14 +17,14 @@ public class ServersMessageSenderSample {
 
 //        double rand = Math.random();
         int portOffset = 0;
-        for ( String prop : ConfigProperties.getAllPropertyStartingWith(Constants.PORT_OFFSET_PREFIX)){
+        for (String prop : ConfigProperties.getAllPropertyStartingWith(Constants.PORT_OFFSET_PREFIX)) {
             try {
                 System.out.println("Connecting to server");
                 portOffset = ConfigProperties.getPropertyInt(prop);
                 Socket socket = new Socket("localhost", port + portOffset);
 
                 ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-                Message m = new Message();
+                AppendCommandMessage m = new AppendCommandMessage();
                 m.originator = "sender_" + prop;
                 m.term = 4;
                 oos.writeObject(m);

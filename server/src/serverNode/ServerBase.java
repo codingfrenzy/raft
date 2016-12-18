@@ -1,7 +1,7 @@
 package serverNode;
 
-import commandPersistence.CommandLogHelper;
-import messaging.Message;
+import commandPersistence.LogManager;
+import messaging.AppendCommandMessage;
 import utilities.ConfigProperties;
 import utilities.Constants;
 
@@ -24,9 +24,10 @@ public abstract class ServerBase implements Runnable {
     protected static ServerSocket server;
     protected Socket socket;
 
-    private static CommandLogHelper logHelper;
+    private static LogManager logHelper;
 
     static ServerState state;
+
     static {
         state = new ServerState();
     }
@@ -51,12 +52,12 @@ public abstract class ServerBase implements Runnable {
             try {
                 socket = server.accept();
                 ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-                processMessage((Message) ois.readObject());
+                processMessage((AppendCommandMessage) ois.readObject());
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
 
-    protected abstract void processMessage(Message msg);
+    protected abstract void processMessage(AppendCommandMessage msg);
 }

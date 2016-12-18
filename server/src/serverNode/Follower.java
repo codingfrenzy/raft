@@ -1,6 +1,6 @@
 package serverNode;
 
-import messaging.Message;
+import messaging.AppendCommandMessage;
 import utilities.Constants;
 
 import java.io.IOException;
@@ -16,7 +16,7 @@ public class Follower extends ServerBase {
         System.out.println("server created" + server.getLocalPort());
     }
 
-    protected void processMessage(Message msg){
+    protected void processMessage(AppendCommandMessage msg) {
         System.out.println("Follower Received: " + msg);
     }
 }
