@@ -1,8 +1,7 @@
 package serverNode;
 
-/**
- * Created by prasanthnair on 12/7/16.
- */
+import utilities.ConfigProperties;
+
 public class ServerInfo {
     private String serverName;
     private int serverPortBase;
@@ -13,9 +12,9 @@ public class ServerInfo {
     lastIndex
      */
 
-    public ServerInfo(String name, int portBase) {
+    public ServerInfo(String name) {
         serverName = name;
-        serverPortBase = portBase;
+        serverPortBase = ConfigProperties.getServerPort(name);
     }
 
     public String getServerName() {
@@ -37,8 +36,8 @@ public class ServerInfo {
     public String toString(){
         StringBuilder sb = new StringBuilder();
         sb.append("ServerInfo: [");
-        sb.append("name = " + serverName);
-        sb.append(", portBase = " + serverPortBase);
+        sb.append("name=" + serverName);
+        sb.append(", portBase=" + serverPortBase);
         sb.append("]");
         return sb.toString();
     }

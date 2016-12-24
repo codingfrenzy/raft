@@ -6,9 +6,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
-/**
- * Created by prasanthnair on 12/18/16.
- */
 public class LoggerHelper {
 
     private Logger logger;

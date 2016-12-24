@@ -1,8 +1,5 @@
 package serverNode;
 
-/**
- * Created by prasanthnair on 12/14/16.
- */
 public class ServerState {
 
     private int term;

@@ -1,8 +1,5 @@
 package commandPersistence;
 
-/**
- * Created by prasanthnair on 12/17/16.
- */
 public class Command {
     private String key;
 
@@ -14,21 +11,21 @@ public class Command {
 
     private Options option;
 
-    public Command(String key, Options option, Float modifierValue) {
+    private Double modifierValue;
+
+    public Command(String key, Options option, Double modifierValue) {
         this.key = key;
         this.option = option;
         this.modifierValue = modifierValue;
     }
 
-    public Float getModifierValue() {
+    public Double getModifierValue() {
         return modifierValue;
     }
 
-    public void setModifierValue(Float modifierValue) {
+    public void setModifierValue(Double modifierValue) {
         this.modifierValue = modifierValue;
     }
-
-    private Float modifierValue;
 
     public void setKey(String key) {
         this.key = key;
@@ -44,5 +41,13 @@ public class Command {
 
     public Options getOption() {
         return option;
+    }
+
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Command: [key=" + key);
+        sb.append(", option=" + option.name());
+        sb.append(", modifierValue=" + modifierValue);
+        return sb.toString();
     }
 }

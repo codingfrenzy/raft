@@ -3,7 +3,11 @@ package utilities;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Properties;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * utilities.ConfigProperties class
@@ -11,6 +15,7 @@ import java.util.*;
  * The values can also be modified at runtime.
  */
 public class ConfigProperties {
+    private static Logger log = LoggerHelper.getLogger(ConfigProperties.class.getName());
     private static Properties properties;
 
     static {
@@ -43,11 +48,22 @@ public class ConfigProperties {
     Would throw an NumberFormatException if the string is invalid.
      */
     public static int getPropertyInt(String prop) {
-        return Integer.valueOf(properties.getProperty(prop));
+        int ret = 0;
+        try{
+            ret = Integer.valueOf(properties.getProperty(prop));
+        } catch (NumberFormatException e){
+            log.log(Level.SEVERE, "Integer return could not be found for property: " + prop + " - Exception: " + e, e);
+        }
+        return ret;
     }
 
     public static Set<String> getAllPropertiesNames() {
         return properties.stringPropertyNames();
+    }
+
+    public static Integer getServerPort(String name){
+        String serverBaseName = Constants.SERVER_CONFIG_PREFIX_STRING;
+        return ConfigProperties.getPropertyInt(serverBaseName + name);
     }
 
 }

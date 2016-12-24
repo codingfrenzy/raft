@@ -1,6 +1,6 @@
 package serverNode;
 
-import commandPersistence.LogManager;
+import commandPersistence.CommandLogManager;
 import messaging.AppendCommandMessage;
 import utilities.ConfigProperties;
 import utilities.Constants;
@@ -11,9 +11,6 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.Set;
 
-/**
- * Created by prasanthnair on 12/7/16.
- */
 public abstract class ServerBase implements Runnable {
 
     HashMap<String, ServerInfo> clusterInfo;
@@ -24,7 +21,7 @@ public abstract class ServerBase implements Runnable {
     protected static ServerSocket server;
     protected Socket socket;
 
-    private static LogManager logHelper;
+    private static CommandLogManager logHelper;
 
     static ServerState state;
 
@@ -34,12 +31,12 @@ public abstract class ServerBase implements Runnable {
 
     public ServerBase(String name) {
         String serverBaseName = Constants.SERVER_CONFIG_PREFIX_STRING;
-        selfInfo = new ServerInfo(name, ConfigProperties.getPropertyInt(serverBaseName + name));
+        selfInfo = new ServerInfo(name);
         Set<String> serversAtStart = ConfigProperties.getAllPropertyStartingWith(serverBaseName);
         clusterInfo = new HashMap<>(serversAtStart.size());
         for (String server : serversAtStart) {
             String cleanServerName = server.substring(serverBaseName.length());
-            clusterInfo.put(cleanServerName, new ServerInfo(cleanServerName, ConfigProperties.getPropertyInt(server)));
+            clusterInfo.put(cleanServerName, new ServerInfo(cleanServerName));
         }
         logFilePath = Constants.LOG_FILEPATH_BASE + "" + name;
         stateMachine = new HashMap<>();

@@ -2,9 +2,6 @@ package commandPersistence;
 
 import java.util.HashMap;
 
-/**
- * Created by prasanthnair on 12/17/16.
- */
 public class StateMachine {
     private Command command;
 
@@ -17,7 +14,7 @@ public class StateMachine {
     public synchronized Float update(Command command) {
         String key = command.getKey();
         Command.Options option = command.getOption();
-        Float modifier = command.getModifierValue();
+        Double modifier = command.getModifierValue();
 
         if (key == null || key.length() == 0) {
             return null;

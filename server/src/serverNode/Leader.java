@@ -6,9 +6,6 @@ import utilities.Constants;
 import java.io.IOException;
 import java.net.ServerSocket;
 
-/**
- * Created by prasanthnair on 12/14/16.
- */
 public class Leader extends ServerBase {
     public Leader(String name) throws IOException {
         super(name);
