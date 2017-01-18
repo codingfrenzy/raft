@@ -3,65 +3,58 @@ package commandPersistence;
 import serverNode.ServerInfo;
 import utilities.LoggerHelper;
 
-import java.util.Map;
-import java.util.TreeMap;
 import java.util.logging.Logger;
 
 public class CommandLogManager {
 
     private static Logger log = LoggerHelper.getLogger(CommandLogManager.class.getName());
 
-    static class LogHistoryKey {
-        int index;
-        int term;
+    /*
+    write lock on the file
+    acquire write lock on the file before updating with commands
+    reading is fine with concurrent
 
-        public LogHistoryKey(int i, int t) {
-            term = t;
-            index = i;
-        }
+     */
 
-        public LogHistoryKey(CommandLogEntry le) {
-            term = le.getTerm();
-            index = le.getIndex();
-        }
+    ServerInfo selfServerInfo;
 
-        public String toString() {
-            return "LogHistoryKey: [index=" + index + ", term=" + term + "]";
-        }
-    }
-
-    private static TreeMap<LogHistoryKey, CommandLogEntry> logHistory;
-
-    static {
-        logHistory = new TreeMap<>((LogHistoryKey o1, LogHistoryKey o2) -> o1.index - o2.index);
+    public CommandLogManager(ServerInfo si){
+        selfServerInfo = si;
     }
 
     public static boolean doesCommandExist(int index, int term) {
-        LogHistoryKey key = new LogHistoryKey(index, term);
-        return logHistory.containsKey(key);
+        // get self server name
+        // get file name (with server name)
+        // read file from bottom
+        // read until currentIndex < searchIndex (as there is no point in going back)
+        // if currentIndex == searchIndex, check the term
+        // return t/f
+
+        CommandLogEntry entry;
+        return false;
     }
 
-    public static void update() {
-        Command cmd = new Command("test", Command.Options.ADD, 5.0);
-        ServerInfo info = new ServerInfo("C");
-        CommandLogEntry le = new CommandLogEntry(4, 2, info, cmd, false, false);
-        logHistory.putIfAbsent(new LogHistoryKey(le), le);
+    public static void insertAndTruncate(CommandLogEntry cle) {
 
-        le.setIndex(6);
-        le.setTerm(3);
-        logHistory.putIfAbsent(new LogHistoryKey(le), le);
-
-        le.setIndex(9);
-        le.setTerm(4);
-        logHistory.putIfAbsent(new LogHistoryKey(le), le);
     }
 
     public static String getHistory() {
         StringBuilder sb = new StringBuilder();
-        for (Map.Entry<LogHistoryKey, CommandLogEntry> entry : logHistory.entrySet()) {
-            sb.append(entry.getKey() + " ---- ");
-            sb.append(entry.getValue() + "\n");
-        }
         return sb.toString();
     }
 }
+
+
+/*
+write-
+get write lock
+update file
+release write lock
+
+read-
+acquire N read locks (for N readers)
+read
+release locks
+
+// chance of writing starvation
+ */

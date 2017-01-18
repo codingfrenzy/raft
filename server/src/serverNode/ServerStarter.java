@@ -1,6 +1,7 @@
 package serverNode;
 
 
+import commandPersistence.CommandLogManager;
 import utilities.ConfigProperties;
 import utilities.Constants;
 
@@ -16,15 +17,20 @@ public class ServerStarter {
         System.out.println(ConfigProperties.getPropertyInt("portOffset.listener.follower"));
         System.out.println(Constants.PORT_OFFSET_LISTENER_FOLLOWER);
 
-        Follower follower = new Follower(args[0]);
+        String serverName = args[0];
+        ServerInfo serverInfo = new ServerInfo(serverName);
+
+        CommandLogManager clm = new CommandLogManager(serverInfo);
+
+        Follower follower = new Follower(serverInfo);
         Thread tFol = new Thread(follower);
         tFol.start();
 
-        Leader l = new Leader(args[0]);
+        Leader l = new Leader(serverInfo);
         Thread tL = new Thread(l);
         tL.start();
 
-        Candidate c = new Candidate(args[0]);
+        Candidate c = new Candidate(serverInfo);
         Thread tC = new Thread(c);
         tC.start();
     }

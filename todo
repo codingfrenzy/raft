@@ -20,3 +20,12 @@ Candidate RV
 Follower validate RV
 start termTimeout timer thread in starter for Candidate
 
+
+logger helper - make it one instance per jvm
+
+
+
+// in manager.update() method=
+    get new value
+    if exists, replace with new value
+        erase everything later

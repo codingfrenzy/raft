@@ -2,7 +2,9 @@ package commandPersistence;
 
 import serverNode.ServerInfo;
 
-public class CommandLogEntry {
+import java.io.Serializable;
+
+public class CommandLogEntry implements Serializable{
     private ServerInfo leader;
     private int term;
     private int index;

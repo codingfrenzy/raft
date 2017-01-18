@@ -9,11 +9,12 @@ import java.io.ObjectInputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 public abstract class ServerBase implements Runnable {
 
-    HashMap<String, ServerInfo> clusterInfo;
+    Map<String, ServerInfo> clusterInfo;
     ServerInfo selfInfo;
     String logFilePath;
     HashMap<String, Integer> stateMachine;
@@ -21,7 +22,7 @@ public abstract class ServerBase implements Runnable {
     protected static ServerSocket server;
     protected Socket socket;
 
-    private static CommandLogManager logHelper;
+    private static CommandLogManager commandLogManager;
 
     static ServerState state;
 
@@ -29,17 +30,24 @@ public abstract class ServerBase implements Runnable {
         state = new ServerState();
     }
 
-    public ServerBase(String name) {
+    public ServerBase(ServerInfo si, CommandLogManager clm) {
+        selfInfo = si;
+        clusterInfo = populateClusterInfo();
+        commandLogManager = clm;
+        logFilePath = Constants.LOG_FILEPATH_BASE + "" + selfInfo.getServerName();
+        stateMachine = new HashMap<>();
+    }
+
+    private Map<String, ServerInfo> populateClusterInfo(){
+        Map<String, ServerInfo> clusterInfo;
         String serverBaseName = Constants.SERVER_CONFIG_PREFIX_STRING;
-        selfInfo = new ServerInfo(name);
         Set<String> serversAtStart = ConfigProperties.getAllPropertyStartingWith(serverBaseName);
         clusterInfo = new HashMap<>(serversAtStart.size());
         for (String server : serversAtStart) {
             String cleanServerName = server.substring(serverBaseName.length());
             clusterInfo.put(cleanServerName, new ServerInfo(cleanServerName));
         }
-        logFilePath = Constants.LOG_FILEPATH_BASE + "" + name;
-        stateMachine = new HashMap<>();
+        return clusterInfo;
     }
 
     @Override
