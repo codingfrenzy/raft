@@ -1,6 +1,8 @@
 package commandPersistence;
 
-public class Command {
+import java.io.Serializable;
+
+public class Command implements Serializable {
     private String key;
 
     public enum Options {

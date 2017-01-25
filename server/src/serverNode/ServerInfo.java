@@ -2,7 +2,9 @@ package serverNode;
 
 import utilities.ConfigProperties;
 
-public class ServerInfo {
+import java.io.Serializable;
+
+public class ServerInfo implements Serializable {
     private String serverName;
     private int serverPortBase;
 

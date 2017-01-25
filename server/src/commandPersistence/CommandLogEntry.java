@@ -11,6 +11,11 @@ public class CommandLogEntry implements Serializable{
     private Command command;
     private boolean committed;
     private boolean stateMachineExecuted;
+    public String forEachTest;
+
+    public CommandLogEntry(String forEachTest) {
+        this.forEachTest = forEachTest;
+    }
 
     public CommandLogEntry(int index, int term, ServerInfo leader, Command command, boolean committed, boolean stateMachineExecuted) {
         this.leader = leader;

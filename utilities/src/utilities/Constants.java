@@ -1,9 +1,11 @@
 package utilities;
 
+import java.io.Serializable;
+
 /**
  * utilities.Constants class: Contains all the constants used in the project.
  */
-public class Constants {
+public class Constants implements Serializable {
     public static final String PROPERTIES_FILE_PATH = "config.properties";
 
     public static final String PORT_OFFSET_PREFIX = "portOffset.listener";

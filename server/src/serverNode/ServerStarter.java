@@ -22,15 +22,15 @@ public class ServerStarter {
 
         CommandLogManager clm = new CommandLogManager(serverInfo);
 
-        Follower follower = new Follower(serverInfo);
+        Follower follower = new Follower(serverInfo, clm);
         Thread tFol = new Thread(follower);
         tFol.start();
 
-        Leader l = new Leader(serverInfo);
+        Leader l = new Leader(serverInfo, clm);
         Thread tL = new Thread(l);
         tL.start();
 
-        Candidate c = new Candidate(serverInfo);
+        Candidate c = new Candidate(serverInfo, clm);
         Thread tC = new Thread(c);
         tC.start();
     }
