@@ -4,6 +4,9 @@ import serverNode.ServerInfo;
 
 import java.io.Serializable;
 
+/*
+todo: Add a equals or compareTo method so that doesCommandExist check can be done.
+*/
 public class CommandLogEntry implements Serializable{
     private ServerInfo leader;
     private int term;
