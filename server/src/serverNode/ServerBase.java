@@ -1,6 +1,5 @@
 package serverNode;
 
-import commandPersistence.CommandLogManager;
 import messaging.AppendCommandMessage;
 import utilities.ConfigProperties;
 import utilities.Constants;
@@ -22,18 +21,15 @@ public abstract class ServerBase implements Runnable {
     protected static ServerSocket server;
     protected Socket socket;
 
-    private static CommandLogManager commandLogManager;
-
     static ServerState state;
 
     static {
         state = new ServerState();
     }
 
-    public ServerBase(ServerInfo si, CommandLogManager clm) {
+    public ServerBase(ServerInfo si) {
         selfInfo = si;
         clusterInfo = populateClusterInfo();
-        commandLogManager = clm;
         logFilePath = Constants.LOG_FILEPATH_BASE + "" + selfInfo.getServerName();
         stateMachine = new HashMap<>();
     }

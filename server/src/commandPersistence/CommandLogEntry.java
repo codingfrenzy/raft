@@ -76,12 +76,14 @@ public class CommandLogEntry implements Serializable{
 
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("CommandLogEntry: [index="+index);
+        sb.append("CommandLogEntry:[index="+index);
         sb.append(", term="+term);
         sb.append(", leader="+leader);
         sb.append(", command="+command);
         sb.append(", committed="+committed);
         sb.append(", stateMachineExecuted="+stateMachineExecuted);
+        sb.append(", forEach="+forEachTest);
+        sb.append("]");
         return sb.toString();
     }
 }

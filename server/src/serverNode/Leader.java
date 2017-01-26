@@ -8,8 +8,8 @@ import java.io.IOException;
 import java.net.ServerSocket;
 
 public class Leader extends ServerBase {
-    public Leader(ServerInfo serverInfo, CommandLogManager clm) throws IOException {
-        super(serverInfo, clm);
+    public Leader(ServerInfo serverInfo) throws IOException {
+        super(serverInfo);
         server = new ServerSocket(selfInfo.getServerPortBase() + Constants.PORT_OFFSET_LISTENER_LEADER);
     }
 

@@ -17,7 +17,7 @@ public class LoggerHelper {
         sf = new SimpleFormatter();
 
         try {
-            fh = new FileHandler("application.log", true);
+            fh = new FileHandler("application_" + Constants.selfServerName + ".log", true);
             fh.setLevel(Level.ALL);
             fh.setFormatter(sf);
         } catch (IOException e) {
@@ -35,3 +35,9 @@ public class LoggerHelper {
     }
 
 }
+
+/**
+ * Improvements
+ * <p>
+ * During initialization of ConfigProperties, this logger gets called (this is all before the selfName is assigned), so there is a log file with null in it.
+ */

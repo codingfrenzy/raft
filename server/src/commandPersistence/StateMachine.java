@@ -5,50 +5,47 @@ import java.util.HashMap;
 public class StateMachine {
     private Command command;
 
-    private static HashMap<String, Float> stateMachine;
+    private static HashMap<String, Long> stateMachine;
 
     static {
         stateMachine = new HashMap<>();
+        
+        // TODO: upon start, load the commandLogManager contents into the stateMachine and execute the commands. This is so that when the server restarts, we can pick up where it was left off.
     }
 
-    public synchronized Float update(Command command) {
+    public synchronized void update(Command command) throws Exception {
         String key = command.getKey();
         Command.Options option = command.getOption();
-        Double modifier = command.getModifierValue();
+        long modifier = command.getModifierValue();
 
         if (key == null || key.length() == 0) {
-            return null;
-        }
-        if (modifier == null) {
-            return null;
+            throw new Exception("Invalid key: " + key);
         }
 
-        Float currentValue;
+        long currentValue;
         if (stateMachine.containsKey(key)) {
             currentValue = stateMachine.get(key);
         } else {
-            currentValue = new Float(0);
+            currentValue = 0;
         }
 
         switch (option) {
             case ADD:
-                currentValue = currentValue.floatValue() + modifier.floatValue();
+                currentValue = currentValue + modifier;
                 stateMachine.put(key, currentValue);
                 break;
             case SUBTRACT:
-                currentValue = currentValue.floatValue() - modifier.floatValue();
+                currentValue = currentValue - modifier;
                 stateMachine.put(key, currentValue);
                 break;
             case MULTIPLY:
-                currentValue = currentValue.floatValue() * modifier.floatValue();
+                currentValue = currentValue * modifier;
                 stateMachine.put(key, currentValue);
                 break;
         }
-
-        return getValue(key);
     }
 
-    public Float getValue(String key) {
+    public long getValue(String key) {
         return stateMachine.get(key);
     }
 

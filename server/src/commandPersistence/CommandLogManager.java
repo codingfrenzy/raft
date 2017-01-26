@@ -1,13 +1,159 @@
 package commandPersistence;
 
 import serverNode.ServerInfo;
+import utilities.Constants;
 import utilities.LoggerHelper;
 
 import java.io.*;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.function.Consumer;
 import java.util.logging.Logger;
+
+public class CommandLogManager {
+
+    private static Logger log = LoggerHelper.getLogger(CommandLogManager.class.getName());
+
+    private static LinkedList<CommandLogEntry> commandLogList;
+    private static ServerInfo selfServerInfo;
+    private static File commandFile;
+
+    static {
+        initialize();
+        loadCommandLog();
+    }
+
+    private static void initialize() {
+        selfServerInfo = new ServerInfo(Constants.selfServerName);
+        commandLogList = new LinkedList<>();
+
+        // create/initialize the log file
+        commandFile = new File("command_log_" + selfServerInfo.getServerName() + ".ser");
+        try {
+            // create file if it doesn't exist
+            if (commandFile.createNewFile()) {
+                log.info("Creating new file.");
+            } else {
+                log.info("Existing file initialized.");
+            }
+        } catch (IOException e) {
+            log.severe(e.toString());
+        }
+    }
+
+    private static void persistCommandLog() {
+        // output hanlders
+
+        try (
+                FileOutputStream fileOutputStream = new FileOutputStream(commandFile);
+                ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+        ) {
+            for (CommandLogEntry entry : commandLogList) {
+                objectOutputStream.writeObject(entry);
+            }
+            log.info("Command logs persisted. Total commands written: " + commandLogList.size() + ". Last command: " + commandLogList.getLast());
+        } catch (IOException e) {
+            log.severe(e.toString());
+        }
+    }
+
+    private static void loadCommandLog() {
+        // input hanlders
+
+        try (
+                FileInputStream fileInputStream = new FileInputStream(commandFile);
+                ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+        ) {
+
+            CommandLogEntry entry = null;
+            while ((entry = (CommandLogEntry) objectInputStream.readObject()) != null) {
+                commandLogList.add(entry);
+            }
+
+        } catch (EOFException e) {
+            // do nothing since no commands have been persisted in this log or EOF has reached
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        log.info("Loaded command log into memory. Command list size: " + commandLogList.size());
+    }
+
+    public static boolean doesCommandExist(int index, int term) {
+        for (CommandLogEntry entry : commandLogList) {
+            if (entry.getTerm() == term && entry.getIndex() == index) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static void insertAndTruncate(CommandLogEntry cle) {
+        if (doesCommandExist(cle.getIndex(), cle.getTerm())) {
+            // delete list and persist into file
+            Iterator<CommandLogEntry> itr = commandLogList.iterator();
+            boolean truncateFlag = false;
+            int removeAt = commandLogList.size() + 1; // safe guard to keep it outside the list
+            for (int i = 0; i < commandLogList.size(); i++) {
+                CommandLogEntry entry = commandLogList.get(i);
+                if (entry.getTerm() == cle.getTerm() && entry.getIndex() == cle.getIndex()) {
+                    truncateFlag = true;
+                    removeAt = i;
+                    break;
+                }
+
+                /*
+                Example block if we have to change a value for all remaining items in the iterator.
+                if (true) {
+                    itr.forEachRemaining(new Consumer<CommandLogEntry>() {
+                        @Override
+                        public void accept(CommandLogEntry commandLogEntry) {
+                            commandLogEntry.forEachTest = "foreach";
+                        }
+                    });
+                }
+                */
+            }
+
+            // remove command entries from the current entry to the last.
+            System.out.println(removeAt);
+            commandLogList = new LinkedList<>(commandLogList.subList(0, removeAt)); // sublist returns a list and we need LinkedList cuz of addLast();
+//            commandLogList = (LinkedList<CommandLogEntry>) commandLogList.subList(0, removeAt);
+
+            System.out.println(getHistory());
+        }
+
+        commandLogList.addLast(cle);
+//        persistCommandLog();
+    }
+
+    public static String getHistory() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("CommandLogManager history: \n");
+        for (CommandLogEntry entry : commandLogList) {
+            sb.append(entry);
+            sb.append("\n");
+        }
+        return sb.toString();
+    }
+
+    public static int getSize() {
+        return commandLogList.size();
+    }
+}
+
+
+/*
+write-
+get write lock
+update file
+release write lock
+
+read-
+acquire N read locks (for N readers)
+read
+release locks
+
+// chance of writing starvation
+ */
 
 /**
  * Improvements:
@@ -30,137 +176,6 @@ import java.util.logging.Logger;
  * <p>
  * Use AppendableObjectOutputStream to append into file rather than writing the whole list all the time
  * http://stackoverflow.com/questions/1194656/appending-to-an-objectoutputstream/1195078#1195078
- */
-
-/*
-todo only need one map per jvm so no need to create object. populate the list only once per jmv. move all methods to static. initialize hanlders only once. load only once. open and close write resources everytime.
- */
-public class CommandLogManager {
-
-    private static Logger log = LoggerHelper.getLogger(CommandLogManager.class.getName());
-
-    LinkedList<CommandLogEntry> commandLogList;
-    ServerInfo selfServerInfo;
-    static File commandFile;
-    static FileOutputStream fileOutputStream = null;
-    static ObjectOutputStream objectOutputStream = null;
-    static FileInputStream fileInputStream = null;
-    static ObjectInputStream objectInputStream = null;
-
-    public CommandLogManager(ServerInfo si) {
-        selfServerInfo = si;
-        commandLogList = new LinkedList<>();
-
-        try {
-            initializeFileHandlers(si);
-            loadCommandLog();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Should only be called ONCE, during class static intialization
-     * @param info
-     * @throws Exception
-     */
-    private static void initializeFileHandlers(ServerInfo info) throws Exception {
-        commandFile = new File("command_log_" + info.getServerName() + ".ser");
-        // create file if it doesn't exist
-        commandFile.createNewFile();
-
-        // output hanlders
-        fileOutputStream = new FileOutputStream(commandFile, true);
-        objectOutputStream = new AppendableObjectOutputStream(fileOutputStream);
-
-        // input hanlders
-        fileInputStream = new FileInputStream(commandFile);
-        objectInputStream = new ObjectInputStream(fileInputStream);
-    }
-
-    private void persistCommandLog() {
-        try {
-            for (CommandLogEntry entry : commandLogList) {
-                objectOutputStream.writeObject(entry);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void loadCommandLog() {
-        log.info("loadCommandLog() - Loading command log into memory.");
-        try {
-            while (true) {
-                CommandLogEntry entry = (CommandLogEntry) objectInputStream.readObject();
-                commandLogList.add(entry);
-            }
-        } catch (EOFException | NullPointerException e) {
-            // do nothing since no commands have been persisted in this log or EOF has reached
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        log.info("loadCommandLog() - Loaded command log into memory. Command list size: " + commandLogList.size());
-    }
-
-    public boolean doesCommandExist(int index, int term) {
-        for (CommandLogEntry entry : commandLogList) {
-            if (entry.getTerm() == term && entry.getIndex() == index) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public void insertAndTruncate(CommandLogEntry cle) {
-
-        if (doesCommandExist(cle.getIndex(), cle.getTerm())) {
-            // delete list and persist into file
-            Iterator<CommandLogEntry> itr = commandLogList.iterator();
-            boolean truncateFlag = false;
-            while (itr.hasNext()) {
-                CommandLogEntry entry = itr.next();
-                if (entry.getTerm() == cle.getTerm() && entry.getIndex() == cle.getIndex()) {
-                    truncateFlag = true;
-                }
-
-                if (truncateFlag) {
-//                    itr.remove();
-                    itr.forEachRemaining(new Consumer<CommandLogEntry>() {
-                        @Override
-                        public void accept(CommandLogEntry commandLogEntry) {
-                            commandLogEntry.forEachTest = "foreach";
-                        }
-                    });
-                }
-            }
-            System.out.println(commandLogList);
-        }
-
-        commandLogList.addLast(cle);
-        persistCommandLog();
-    }
-
-    public String getHistory() {
-        return commandLogList.toString();
-    }
-
-    public int getSize() {
-        return commandLogList.size();
-    }
-}
-
-
-/*
-write-
-get write lock
-update file
-release write lock
-
-read-
-acquire N read locks (for N readers)
-read
-release locks
-
-// chance of writing starvation
+ * <p>
+ * Change the commandList into a hashmap or TreeMap with a custom key. Use your own hashes and equals method to use it.
  */

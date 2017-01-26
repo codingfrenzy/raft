@@ -28,4 +28,6 @@ public class Constants implements Serializable {
         REQUEST_VOTE, // Follower
         REQUEST_VOTE_ACK // Candidate
     }
+
+    public static String selfServerName;
 }

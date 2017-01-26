@@ -8,8 +8,8 @@ import java.io.IOException;
 import java.net.ServerSocket;
 
 public class Candidate extends ServerBase {
-    public Candidate(ServerInfo serverInfo, CommandLogManager clm) throws IOException {
-        super(serverInfo, clm);
+    public Candidate(ServerInfo serverInfo) throws IOException {
+        super(serverInfo);
         server = new ServerSocket(selfInfo.getServerPortBase() + Constants.PORT_OFFSET_LISTENER_CANDIDATE);
     }
 

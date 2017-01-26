@@ -1,7 +1,6 @@
 package serverNode;
 
 
-import commandPersistence.CommandLogManager;
 import utilities.ConfigProperties;
 import utilities.Constants;
 
@@ -19,18 +18,17 @@ public class ServerStarter {
 
         String serverName = args[0];
         ServerInfo serverInfo = new ServerInfo(serverName);
+        Constants.selfServerName = serverName;
 
-        CommandLogManager clm = new CommandLogManager(serverInfo);
-
-        Follower follower = new Follower(serverInfo, clm);
+        Follower follower = new Follower(serverInfo);
         Thread tFol = new Thread(follower);
         tFol.start();
 
-        Leader l = new Leader(serverInfo, clm);
+        Leader l = new Leader(serverInfo);
         Thread tL = new Thread(l);
         tL.start();
 
-        Candidate c = new Candidate(serverInfo, clm);
+        Candidate c = new Candidate(serverInfo);
         Thread tC = new Thread(c);
         tC.start();
     }

@@ -13,19 +13,19 @@ public class Command implements Serializable {
 
     private Options option;
 
-    private Double modifierValue;
+    private long modifierValue;
 
-    public Command(String key, Options option, Double modifierValue) {
+    public Command(String key, Options option, long modifierValue) {
         this.key = key;
         this.option = option;
         this.modifierValue = modifierValue;
     }
 
-    public Double getModifierValue() {
+    public long getModifierValue() {
         return modifierValue;
     }
 
-    public void setModifierValue(Double modifierValue) {
+    public void setModifierValue(long modifierValue) {
         this.modifierValue = modifierValue;
     }
 
@@ -47,9 +47,10 @@ public class Command implements Serializable {
 
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Command: [key=" + key);
+        sb.append("Command:[key=" + key);
         sb.append(", option=" + option.name());
         sb.append(", modifierValue=" + modifierValue);
+        sb.append("]");
         return sb.toString();
     }
 }

@@ -37,7 +37,7 @@ public class ServerInfo implements Serializable {
 
     public String toString(){
         StringBuilder sb = new StringBuilder();
-        sb.append("ServerInfo: [");
+        sb.append("ServerInfo:[");
         sb.append("name=" + serverName);
         sb.append(", portBase=" + serverPortBase);
         sb.append("]");
