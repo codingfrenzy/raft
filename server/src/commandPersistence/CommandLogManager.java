@@ -86,6 +86,10 @@ public class CommandLogManager {
         return false;
     }
 
+    public static CommandLogEntry latestCommittedCommand(CommandLogEntry cle) {
+        return null;
+    }
+    
     public static void insertAndTruncate(CommandLogEntry cle) {
         if (doesCommandExist(cle.getIndex(), cle.getTerm())) {
             // delete list and persist into file

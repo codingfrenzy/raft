@@ -13,19 +13,15 @@ import java.util.Set;
 
 public abstract class ServerBase implements Runnable {
 
-    Map<String, ServerInfo> clusterInfo;
-    ServerInfo selfInfo;
-    String logFilePath;
-    HashMap<String, Integer> stateMachine;
+    protected Map<String, ServerInfo> clusterInfo;
+    protected ServerInfo selfInfo;
+    protected String logFilePath;
+    protected HashMap<String, Integer> stateMachine;
 
     protected static ServerSocket server;
     protected Socket socket;
 
-    static ServerState state;
-
-    static {
-        state = new ServerState();
-    }
+    protected ServerState state;
 
     public ServerBase(ServerInfo si) {
         selfInfo = si;
@@ -54,6 +50,8 @@ public abstract class ServerBase implements Runnable {
                 socket = server.accept();
                 ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
                 processMessage((AppendCommandMessage) ois.readObject());
+
+                System.out.println("Server state: " + state);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -61,4 +59,12 @@ public abstract class ServerBase implements Runnable {
     }
 
     protected abstract void processMessage(AppendCommandMessage msg);
+
+    public ServerState getState() {
+        return state;
+    }
+
+    public void setState(ServerState state) {
+        this.state = state;
+    }
 }

@@ -16,6 +16,7 @@ public class CommandLogManagerTester {
 //        CommandLogManager.insertAndTruncate(le2);
 //        CommandLogManager.insertAndTruncate(le3);
 
+        System.out.println(CommandLogManager.getHistory());
         Command cmd2 = new Command("test2", Command.Options.SUBTRACT, 2);
         CommandLogEntry le4 = new CommandLogEntry(6, 2, info, cmd2, false, false);
         CommandLogManager.insertAndTruncate(le4);

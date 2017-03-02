@@ -16,20 +16,34 @@ public class ServerStarter {
         System.out.println(ConfigProperties.getPropertyInt("portOffset.listener.follower"));
         System.out.println(Constants.PORT_OFFSET_LISTENER_FOLLOWER);
 
+
         String serverName = args[0];
         ServerInfo serverInfo = new ServerInfo(serverName);
         Constants.selfServerName = serverName;
 
+        ServerState state = new ServerState(getLastTerm());
+
         Follower follower = new Follower(serverInfo);
+        follower.setState(state);
+
+        Leader l = new Leader(serverInfo);
+        l.setState(state);
+
+        Candidate c = new Candidate(serverInfo);
+        c.setState(state);
+
         Thread tFol = new Thread(follower);
         tFol.start();
 
-        Leader l = new Leader(serverInfo);
         Thread tL = new Thread(l);
         tL.start();
 
-        Candidate c = new Candidate(serverInfo);
         Thread tC = new Thread(c);
         tC.start();
+    }
+
+    // todo get last persisted term info so that if a server resumes it will know what term it was.
+    private static int getLastTerm() {
+        return 1;
     }
 }
