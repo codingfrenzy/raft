@@ -5,6 +5,7 @@ import utilities.ConfigProperties;
 import utilities.Constants;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class ServerStarter {
     public static void main(String[] args) throws IOException {
@@ -26,20 +27,24 @@ public class ServerStarter {
         Follower follower = new Follower(serverInfo);
         follower.setState(state);
 
-        Leader l = new Leader(serverInfo);
-        l.setState(state);
+        Leader listener = new Leader(serverInfo);
+        listener.setState(state);
 
-        Candidate c = new Candidate(serverInfo);
-        c.setState(state);
+        ServerStateManager timer = new ServerStateManager(state);
 
-        Thread tFol = new Thread(follower);
-        tFol.start();
+        Candidate candidate = new Candidate(serverInfo);
+        candidate.setState(state);
 
-        Thread tL = new Thread(l);
-        tL.start();
+        ArrayList<Runnable> listOfThreads = new ArrayList<>();
+        listOfThreads.add(follower);
+        listOfThreads.add(listener);
+        listOfThreads.add(candidate);
+        listOfThreads.add(timer);
 
-        Thread tC = new Thread(c);
-        tC.start();
+        for(Runnable sb : listOfThreads){
+            Thread t = new Thread(sb);
+            t.start();
+        }
     }
 
     // todo get last persisted term info so that if a server resumes it will know what term it was.

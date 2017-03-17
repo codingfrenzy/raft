@@ -6,6 +6,10 @@ import java.io.Serializable;
  * utilities.Constants class: Contains all the constants used in the project.
  */
 public class Constants implements Serializable {
+    public static final int HEARTBEAT_TIMEOUT_SECONDS = 5;
+    public static final int ELECTION_TIMEOUT_LOWER_MILLISECONDS = 500;
+    public static final int ELECTION_TIMEOUT_UPPER_MMILLISECONDS = 1000;
+
     public static final String PROPERTIES_FILE_PATH = "config.properties";
 
     public static final String PORT_OFFSET_PREFIX = "portOffset.listener";

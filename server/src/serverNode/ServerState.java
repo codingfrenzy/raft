@@ -12,6 +12,7 @@ public class ServerState {
     private ServerInfo lastTermLeader;
     private ServerInfo currentTermLeader;
     private Role currentRole;
+    private int lastVotedTerm;
 
     public ServerState(int term) {
         this.term = term;

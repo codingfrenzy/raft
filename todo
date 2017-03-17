@@ -29,3 +29,9 @@ logger helper - make it one instance per jvm
     get new value
     if exists, replace with new value
         erase everything later
+
+
+
+term timer and state changer
+promote candidate
+demote leader upon term completion (will need a request queue to store backlog if no leader is present; can be done in the load balancer wchich redirects queries to leader)
