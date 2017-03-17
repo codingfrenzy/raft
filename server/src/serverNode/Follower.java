@@ -17,7 +17,7 @@ public class Follower extends ServerBase {
         System.out.println("server created" + server.getLocalPort());
     }
 
-    protected void processMessage(AppendCommandMessage msg) {
-        System.out.println("Follower Received: " + msg);
+    protected void processMessage(Object objMsg) {
+        System.out.println("Follower Received: " + objMsg);
     }
 }

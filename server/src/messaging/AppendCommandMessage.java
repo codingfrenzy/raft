@@ -9,13 +9,10 @@ import java.io.Serializable;
  */
 public class AppendCommandMessage extends MessageBase implements Serializable {
     private int nextIndex;
-    private boolean committed;
-    private boolean stateMachineExecuted;
+    private CommandCommitStatus commitStatus;
+    private Command command;
 
-    public String originator;
-    public int term;
-    Command command;
-
+    // constructor
 
     public String toString() {
         return originator + "-" + term;

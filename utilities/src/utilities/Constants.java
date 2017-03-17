@@ -25,6 +25,18 @@ public class Constants implements Serializable {
     public static int TERM_TIMEOUT_BASE = ConfigProperties.getPropertyInt("term.timeout.base");
     public static int TERM_TIMEOUT_BUFFER = ConfigProperties.getPropertyInt("term.timeout.buffer");
 
+    public enum RequestVoteStages {
+        RREQUEST_VOTE,
+        ACCEPT_VOTE,
+        REJECTE_VOTE
+    }
+
+    public enum CommandCommitStatus {
+        BEFORE_COMMIT, // initial test for consensus
+        TO_COMMIT, // leader has executed in state machine and sends to followers to commit
+        COMMITTED, // command is executed in state machine and ACKS to leader
+    }
+
     public enum MessageType {
         CLIENT_REQUEST, // Leader
         APPEND_COMMAND, // Follower

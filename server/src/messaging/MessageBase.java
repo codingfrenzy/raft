@@ -8,9 +8,10 @@ import utilities.Constants;
  */
 public abstract class MessageBase {
 
-    protected ServerInfo originator;
+    protected ServerInfo originatorServer;
     protected Constants.MessageType type;
-    protected int index;
+    protected int lastLogIndex;
+    protected int lastLogTerm;
     protected int term;
 
 }

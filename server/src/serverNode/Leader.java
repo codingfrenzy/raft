@@ -13,7 +13,7 @@ public class Leader extends ServerBase {
         server = new ServerSocket(selfInfo.getServerPortBase() + Constants.PORT_OFFSET_LISTENER_LEADER);
     }
 
-    protected void processMessage(AppendCommandMessage msg) {
-        System.out.println("Leader Received: " + msg);
+    protected void processMessage(Object objMsg) {
+        System.out.println("Leader Received: " + objMsg);
     }
 }

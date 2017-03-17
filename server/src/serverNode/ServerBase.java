@@ -49,7 +49,7 @@ public abstract class ServerBase implements Runnable {
             try {
                 socket = server.accept();
                 ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-                processMessage((AppendCommandMessage) ois.readObject());
+                processMessage(ois.readObject());
 
                 System.out.println("Server state: " + state);
             } catch (Exception e) {
@@ -58,7 +58,7 @@ public abstract class ServerBase implements Runnable {
         }
     }
 
-    protected abstract void processMessage(AppendCommandMessage msg);
+    protected abstract void processMessage(Object objMsg);
 
     public ServerState getState() {
         return state;
