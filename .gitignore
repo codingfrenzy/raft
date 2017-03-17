@@ -3,6 +3,7 @@
 classes/*
 *.iml
 *.log
+*.ser
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/

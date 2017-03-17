@@ -3,9 +3,9 @@ package serverNode;
 import utilities.Constants;
 
 public class ServerStateManager implements Runnable {
-    ServerState state = null;
-    long lastHeartBeatTime;
-    long lastElectionResponseTime;
+    private ServerState state = null;
+    private long lastHeartBeatTime;
+    private long lastElectionResponseTime;
 
     //last time leader contacted
     // lower limit - term
@@ -24,6 +24,9 @@ public class ServerStateManager implements Runnable {
         lastElectionResponseTime = System.currentTimeMillis();
     }
 
+    public synchronized void updateHeartBeatTime(){
+        lastHeartBeatTime = System.currentTimeMillis();
+    }
 
     public void run() {
 
@@ -32,9 +35,10 @@ public class ServerStateManager implements Runnable {
 
             /*
              if last heartbeat was within the heartbeatTimeout limit,
-             leader is working as expected -> sleep and retry
+             or if current server is undergoing election
+             cluster is working as expected -> sleep and retry
               */
-            if (lastHeartBeatTime > (currentTime - (Constants.HEARTBEAT_TIMEOUT_SECONDS * 1000))) {
+            if (lastHeartBeatTime > (currentTime - (Constants.HEARTBEAT_TIMEOUT_SECONDS * 1000)) && state.getCurrentRole() != ServerState.Role.CANDIDATE) {
                 try {
                     Thread.sleep(Constants.HEARTBEAT_TIMEOUT_SECONDS);
                     continue;
@@ -43,6 +47,19 @@ public class ServerStateManager implements Runnable {
                 }
             }
 
+            /*
+            todo
+            promote to candidate
+                candidate sends request to all servers
+                start another thread whcih times the election timeout.
+            onMsg keeps count
+                if majority reached, then promote to leader
+                else keep listening
+
+            election timer thread looks at electionTimeout && server state.
+                if not candidate, kill self thread
+
+             */
             /*
             Reaching here means leader is missing,
             wait for election timeout to get over, then check if voted for a term higher than current term
