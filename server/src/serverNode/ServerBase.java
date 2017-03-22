@@ -1,6 +1,7 @@
 package serverNode;
 
 import messaging.AppendCommandMessage;
+import messaging.MessageBase;
 import utilities.ConfigProperties;
 import utilities.Constants;
 
@@ -49,7 +50,7 @@ public abstract class ServerBase implements Runnable {
             try {
                 socket = server.accept();
                 ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-                processMessage(ois.readObject());
+                processMessage((MessageBase) ois.readObject());
 
                 System.out.println("Server state: " + state);
             } catch (Exception e) {
@@ -58,7 +59,7 @@ public abstract class ServerBase implements Runnable {
         }
     }
 
-    protected abstract void processMessage(Object objMsg);
+    protected abstract void processMessage(MessageBase msg);
 
     public ServerState getState() {
         return state;

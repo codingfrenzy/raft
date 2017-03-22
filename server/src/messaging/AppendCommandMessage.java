@@ -1,6 +1,7 @@
 package messaging;
 
 import commandPersistence.Command;
+import utilities.Constants.CommandCommitStatus;
 
 import java.io.Serializable;
 
@@ -15,6 +16,6 @@ public class AppendCommandMessage extends MessageBase implements Serializable {
     // constructor
 
     public String toString() {
-        return originator + "-" + term;
+        return originatorServer + "-" + term;
     }
 }
