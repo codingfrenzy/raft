@@ -1,7 +1,6 @@
 package serverNode;
 
-import commandPersistence.CommandLogManager;
-import messaging.AppendCommandMessage;
+import cluster.ServerInfo;
 import messaging.MessageBase;
 import utilities.Constants;
 

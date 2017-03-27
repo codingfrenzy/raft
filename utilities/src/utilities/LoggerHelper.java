@@ -25,6 +25,10 @@ public class LoggerHelper {
         }
     }
 
+    private LoggerHelper(){
+
+    }
+
     public static Logger getLogger(String name) {
         LoggerHelper lh = new LoggerHelper();
 

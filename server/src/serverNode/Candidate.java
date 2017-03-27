@@ -1,8 +1,8 @@
 package serverNode;
 
-import commandPersistence.CommandLogManager;
-import messaging.AppendCommandMessage;
+import cluster.ServerInfo;
 import messaging.MessageBase;
+import messaging.RequestVoteMessage;
 import utilities.Constants;
 
 import java.io.IOException;
@@ -16,5 +16,14 @@ public class Candidate extends ServerBase {
 
     protected void processMessage(MessageBase msg) {
         System.out.println("Candidate Received: " + msg);
+
+        RequestVoteMessage rvm = (RequestVoteMessage) msg;
+    }
+
+    public void sentVoteRequests(){
+        for(ServerInfo server : clusterInfo){
+            // make request vote msg
+            // send it to all
+        }
     }
 }

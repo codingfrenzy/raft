@@ -1,6 +1,7 @@
 package serverNode;
 
 
+import cluster.ServerInfo;
 import utilities.ConfigProperties;
 import utilities.Constants;
 
@@ -30,10 +31,10 @@ public class ServerStarter {
         Leader listener = new Leader(serverInfo);
         listener.setState(state);
 
-        ServerStateManager timer = new ServerStateManager(state);
-
         Candidate candidate = new Candidate(serverInfo);
         candidate.setState(state);
+
+        ServerStateManager timer = new ServerStateManager(state, candidate);
 
         ArrayList<Runnable> listOfThreads = new ArrayList<>();
         listOfThreads.add(follower);

@@ -1,11 +1,12 @@
 package serverNode;
 
 import utilities.Constants;
+import serverNode.ServerState.Role;
 
 public class ServerStateManager implements Runnable {
     private ServerState state = null;
-    private long lastHeartBeatTime;
-    private long lastElectionResponseTime;
+
+    private Candidate candidateServer;
 
     //last time leader contacted
     // lower limit - term
@@ -18,14 +19,9 @@ public class ServerStateManager implements Runnable {
     cons?
      */
 
-    public ServerStateManager(ServerState ss) {
+    public ServerStateManager(ServerState ss, Candidate candidate) {
         state = ss;
-        lastHeartBeatTime = System.currentTimeMillis();
-        lastElectionResponseTime = System.currentTimeMillis();
-    }
-
-    public synchronized void updateHeartBeatTime(){
-        lastHeartBeatTime = System.currentTimeMillis();
+        candidateServer = candidate;
     }
 
     public void run() {
@@ -33,12 +29,21 @@ public class ServerStateManager implements Runnable {
         while (true) {
             long currentTime = System.currentTimeMillis();
 
-            /*
-             if last heartbeat was within the heartbeatTimeout limit,
-             or if current server is undergoing election
-             cluster is working as expected -> sleep and retry
-              */
-            if (lastHeartBeatTime > (currentTime - (Constants.HEARTBEAT_TIMEOUT_SECONDS * 1000)) && state.getCurrentRole() != ServerState.Role.CANDIDATE) {
+            boolean stateChangeRequired = true;
+
+            synchronized (state) {
+                /*
+                 if last heartbeat was within the heartbeatTimeout limit,
+                 or if current server is undergoing election
+                 cluster is working as expected -> sleep and retry
+                  */
+
+                if (state.getLastHeartBeatTime() > (currentTime - (Constants.HEARTBEAT_TIMEOUT_SECONDS * 1000)) && state.getCurrentRole() != Role.CANDIDATE) {
+                    stateChangeRequired = false;
+                }
+            }
+
+            if (stateChangeRequired) {
                 try {
                     Thread.sleep(Constants.HEARTBEAT_TIMEOUT_SECONDS);
                     continue;
@@ -47,6 +52,14 @@ public class ServerStateManager implements Runnable {
                 }
             }
 
+            // have to promote to Candidate and start the election process because there was no communication during the timers.
+            synchronized (state) {
+                state.updateElectionTimer();
+                state.updateHeartBeatTime();
+                state.setCurrentRole(Role.CANDIDATE);
+            }
+
+            candidateServer.sentVoteRequests();
             /*
             todo
             promote to candidate

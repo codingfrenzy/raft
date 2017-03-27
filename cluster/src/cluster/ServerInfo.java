@@ -1,4 +1,4 @@
-package serverNode;
+package cluster;
 
 import utilities.ConfigProperties;
 

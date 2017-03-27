@@ -1,20 +1,19 @@
 package serverNode;
 
-import messaging.AppendCommandMessage;
+import cluster.ClusterManager;
+import cluster.ServerInfo;
 import messaging.MessageBase;
-import utilities.ConfigProperties;
 import utilities.Constants;
 
 import java.io.ObjectInputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
 public abstract class ServerBase implements Runnable {
 
-    protected Map<String, ServerInfo> clusterInfo;
+    protected Set<ServerInfo> clusterInfo;
     protected ServerInfo selfInfo;
     protected String logFilePath;
     protected HashMap<String, Integer> stateMachine;
@@ -26,21 +25,13 @@ public abstract class ServerBase implements Runnable {
 
     public ServerBase(ServerInfo si) {
         selfInfo = si;
-        clusterInfo = populateClusterInfo();
+        clusterInfo = ClusterManager.getServersInCluster();
         logFilePath = Constants.LOG_FILEPATH_BASE + "" + selfInfo.getServerName();
         stateMachine = new HashMap<>();
     }
 
-    private Map<String, ServerInfo> populateClusterInfo(){
-        Map<String, ServerInfo> clusterInfo;
-        String serverBaseName = Constants.SERVER_CONFIG_PREFIX_STRING;
-        Set<String> serversAtStart = ConfigProperties.getAllPropertyStartingWith(serverBaseName);
-        clusterInfo = new HashMap<>(serversAtStart.size());
-        for (String server : serversAtStart) {
-            String cleanServerName = server.substring(serverBaseName.length());
-            clusterInfo.put(cleanServerName, new ServerInfo(cleanServerName));
-        }
-        return clusterInfo;
+    synchronized public void updateServerCluster(Set<ServerInfo> cluster){
+        clusterInfo = cluster;
     }
 
     @Override

@@ -1,5 +1,7 @@
 package serverNode;
 
+import cluster.ServerInfo;
+
 public class ServerState {
 
     public enum Role {
@@ -13,11 +15,31 @@ public class ServerState {
     private ServerInfo currentTermLeader;
     private Role currentRole;
     private int lastVotedTerm;
+    private long lastHeartBeatTime;
+    private long electionTimer;
 
     public ServerState(int term) {
         this.term = term;
         lastTermLeader = null;
         currentTermLeader = null;
+        updateElectionTimer();
+        updateHeartBeatTime();
+    }
+
+    public synchronized long getLastHeartBeatTime(){
+        return lastHeartBeatTime;
+    }
+
+    public synchronized long getElectionTimer(){
+        return electionTimer;
+    }
+
+    public synchronized void updateHeartBeatTime(){
+        lastHeartBeatTime = System.currentTimeMillis();
+    }
+
+    public synchronized void updateElectionTimer(){
+        electionTimer = System.currentTimeMillis();
     }
 
     public Role getCurrentRole() {
